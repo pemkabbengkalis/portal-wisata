@@ -17,6 +17,7 @@
 !/public/build/manifest.json
 /public/hot
 /public/storage
+!/storage/app/public/**
 /storage/*.key
 /storage/pail
 
