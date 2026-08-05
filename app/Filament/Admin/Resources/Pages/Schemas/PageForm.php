@@ -5,7 +5,7 @@ namespace App\Filament\Admin\Resources\Pages\Schemas;
 use Filament\Schemas\Schema;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
+
 use Filament\Schemas\Components\Section;
 use Illuminate\Support\Str;
 
@@ -23,7 +23,7 @@ class PageForm
                     ->disabled()
                     ->dehydrated()
                     ->required(),
-                RichEditor::make('content')
+                \App\Filament\Forms\Components\Summernote::make('content')
                     ->required()
                     ->columnSpanFull(),
                 Section::make('SEO')
