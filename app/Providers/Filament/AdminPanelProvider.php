@@ -46,11 +46,6 @@ class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ])
-            ->renderHook(
-                PanelsRenderHook::HEAD_END,
-                fn (): string => '<link rel="stylesheet" href="' . asset('css/admin-custom.css') . '?v=2">'
-                    . '<script src="' . asset('js/trix-custom.js') . '?v=2"></script>'
-            )
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
