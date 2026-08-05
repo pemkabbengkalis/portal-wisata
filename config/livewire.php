@@ -130,7 +130,7 @@ return [
 
     'temporary_file_upload' => [
         'disk' => env('LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK', 'public'),
-        'rules' => ['required', 'file', 'max:10240'], // Max 10MB
+        'rules' => ['required', 'file', 'max:15360'], // Max 15MB
         'directory' => 'livewire-tmp', // Explicitly set (same as default)
         'middleware' => 'throttle:60,1', // Rate limiting
         'preview_mimes' => [

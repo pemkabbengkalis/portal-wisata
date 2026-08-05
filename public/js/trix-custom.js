@@ -57,6 +57,14 @@
                 paste.string  = clean;
             }
         });
+
+        /* 2. Enter -> Single Line Break */
+        editorEl.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                editorEl.editor.insertLineBreak();
+            }
+        });
     }
 
     /* ─────────────────────────────────────────────────────────────────────────

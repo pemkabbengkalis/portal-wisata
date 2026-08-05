@@ -167,9 +167,9 @@ class EnhancedLivewireUploadSecurity
             }
 
             // 8. CHECK FILE SIZE
-            $maxSize = 10240; // 10MB in KB
+            $maxSize = 15360; // 15MB in KB
             if ($file->getSize() > ($maxSize * 1024)) {
-                abort(413, 'File too large. Maximum size: 10MB');
+                abort(413, 'File too large. Maximum size: 15MB');
             }
 
             // 9. SANITIZE FILENAME
