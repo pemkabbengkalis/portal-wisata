@@ -20,4 +20,10 @@ class Setting extends Model
             'maintenance_started_at' => 'datetime',
         ];
     }
+
+    /**
+     * Sambutan kepala dinas fields:
+     * sambutan_nama_kepala, sambutan_jabatan_kepala, sambutan_foto_kepala,
+     * sambutan_isi, sambutan_link_selengkapnya
+     */
 }

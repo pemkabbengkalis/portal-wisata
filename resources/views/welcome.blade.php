@@ -107,7 +107,89 @@
          @keydown.escape.window="closeLightbox()"
          class="container mx-auto mb-12 bg-gray-100 py-8 rounded-xl">
 
-        
+
+
+
+          {{-- ═══════════════════════════════════════════════════════════════════
+         SAMBUTAN KEPALA DINAS
+    ═══════════════════════════════════════════════════════════════════ --}}
+    @if($setting && ($setting->sambutan_nama_kepala || $setting->sambutan_isi))
+    <div class="mb-12">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="flex flex-col md:flex-row items-stretch">
+
+                {{-- ── Photo Column ── --}}
+                <div class="md:w-64 lg:w-72 shrink-0 relative">
+                    @if($setting->sambutan_foto_kepala)
+                        <img
+                            src="{{ asset('storage/' . $setting->sambutan_foto_kepala) }}"
+                            alt="{{ $setting->sambutan_nama_kepala ?? 'Kepala Dinas' }}"
+                            class="w-full h-64 md:h-full object-cover object-top"
+                        >
+                    @else
+                        {{-- Placeholder jika foto belum diisi --}}
+                        <div class="w-full h-64 md:h-full bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+                            <i class="fas fa-user-tie text-6xl text-green-300"></i>
+                        </div>
+                    @endif
+                    {{-- Decorative corner accent --}}
+                    <div class="absolute bottom-0 right-0 w-16 h-16 bg-green-600/10 rounded-tl-3xl pointer-events-none"></div>
+                </div>
+
+                {{-- ── Content Column ── --}}
+                <div class="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-center relative">
+                    {{-- Decorative quote mark background --}}
+                    <div class="absolute top-4 right-6 text-green-100 text-9xl font-serif leading-none select-none pointer-events-none" aria-hidden="true">"</div>
+
+                    {{-- Badge --}}
+                    <div class="inline-flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4 w-fit">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                        </svg>
+                        Sambutan Kepala Dinas
+                    </div>
+
+                    {{-- Title --}}
+                    <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-2 leading-tight">
+                        Selamat Datang di {{ $setting->site_name ?? config('app.name') }}
+                    </h2>
+
+                    {{-- Name & Position --}}
+                    @if($setting->sambutan_nama_kepala)
+                    <p class="text-green-600 font-semibold text-base mb-4">
+                        {{ $setting->sambutan_nama_kepala }}
+                        @if($setting->sambutan_jabatan_kepala)
+                            <span class="text-gray-400 font-normal text-sm"> &mdash; {{ $setting->sambutan_jabatan_kepala }}</span>
+                        @endif
+                    </p>
+                    @endif
+
+                    {{-- Excerpt --}}
+                    @if($setting->sambutan_isi)
+                    <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-6 line-clamp-3 relative z-10">
+                        {{ $setting->sambutan_isi }}
+                    </p>
+                    @endif
+
+                    {{-- Read More Link --}}
+                    @if($setting->sambutan_link_selengkapnya)
+                    <div>
+                        <a href="{{ $setting->sambutan_link_selengkapnya }}"
+                           class="inline-flex items-center gap-2 text-gray-800 font-bold text-sm hover:text-green-600 transition-colors duration-200 group/link">
+                            Baca Selengkapnya
+                            <svg class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @endif
+          
 
         <!-- Icon Category Menu -->
         <div class="flex flex-nowrap md:flex-wrap justify-start md:justify-center overflow-x-auto gap-4 md:gap-8 pb-4 scrollbar-hide mb-8">
@@ -473,6 +555,8 @@
         });
     </script>
     @endif
+
+   
 
    
 

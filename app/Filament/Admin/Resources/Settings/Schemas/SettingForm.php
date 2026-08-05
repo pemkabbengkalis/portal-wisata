@@ -63,6 +63,52 @@ class SettingForm
                         Textarea::make('about_us')
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('🎤 Sambutan Kepala Dinas')
+                    ->description('Informasi sambutan yang ditampilkan di halaman utama website.')
+                    ->collapsible()
+                    ->components([
+                        TextInput::make('sambutan_nama_kepala')
+                            ->label('Nama Kepala Dinas')
+                            ->placeholder('Contoh: dr. H. Ahmad Syukri, M.Kes')
+                            ->maxLength(255),
+                        TextInput::make('sambutan_jabatan_kepala')
+                            ->label('Jabatan')
+                            ->placeholder('Contoh: Kepala Dinas Pariwisata Kab. Bengkalis')
+                            ->maxLength(255),
+                        FileUpload::make('sambutan_foto_kepala')
+                            ->label('Foto Kepala Dinas')
+                            ->image()
+                            ->directory('sambutan')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->maxSize(5120) // 5MB
+                            ->deletable(true)
+                            ->reorderable(false)
+                            ->openable()
+                            ->downloadable()
+                            ->previewable(true)
+                            ->imagePreviewHeight('250')
+                            ->helperText('Upload foto kepala dinas (disarankan format portrait/tegak).')
+                            ->deleteUploadedFileUsing(function ($file) {
+                                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($file)) {
+                                    \Illuminate\Support\Facades\Storage::disk('public')->delete($file);
+                                }
+                            }),
+                        Textarea::make('sambutan_isi')
+                            ->label('Isi Sambutan')
+                            ->placeholder('Puji syukur kita panjatkan kehadirat Allah Yang Maha Kuasa...')
+                            ->rows(5)
+                            ->helperText('Teks sambutan yang akan ditampilkan di halaman utama (akan dipotong otomatis).')
+                            ->columnSpanFull(),
+                        TextInput::make('sambutan_link_selengkapnya')
+                            ->label('Link "Baca Selengkapnya"')
+                            ->placeholder('Contoh: /halaman/sambutan-kepala-dinas')
+                            ->helperText('URL halaman detail sambutan. Kosongkan jika tidak ada halaman detail.')
+                            ->columnSpanFull(),
+                    ]),
+
                 Section::make('Contact Information')
                     ->components([
                         TextInput::make('email')

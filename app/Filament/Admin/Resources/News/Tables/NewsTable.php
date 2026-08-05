@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\News\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -61,6 +62,12 @@ class NewsTable
                     ]),
             ])
             ->recordActions([
+                Action::make('view_frontend')
+                    ->label('View')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->url(fn ($record): string => route('news.show', $record->slug))
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->toolbarActions([
