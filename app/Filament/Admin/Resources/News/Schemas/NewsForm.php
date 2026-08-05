@@ -51,34 +51,6 @@ class NewsForm
                         RichEditor::make('content')
                             ->required()
                             ->columnSpanFull(),
-                        FileUpload::make('attachment')
-                            ->label('Lampiran File')
-                            ->helperText('Upload file lampiran (PDF, Word, Excel, gambar, dll). Maksimal 15 MB.')
-                            ->directory('news-attachments')
-                            ->disk('public')
-                            ->visibility('public')
-                            ->acceptedFileTypes([
-                                'application/pdf',
-                                'application/msword',
-                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                'application/vnd.ms-excel',
-                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                'application/vnd.ms-powerpoint',
-                                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                                'image/jpeg',
-                                'image/png',
-                                'image/webp',
-                                'image/gif',
-                                'application/zip',
-                                'application/x-rar-compressed',
-                            ])
-                            ->maxSize(15360) // 15 MB
-                            ->deletable(true)
-                            ->openable()
-                            ->downloadable()
-                            ->previewable(false)
-                            ->storeFileNamesIn('attachment_name')
-                            ->columnSpanFull(),
                     ]),
                 Section::make('Media & Status')
                     ->components([
