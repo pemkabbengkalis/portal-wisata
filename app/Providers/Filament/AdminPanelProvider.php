@@ -48,8 +48,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
-                fn (): string => '<link rel="stylesheet" href="' . asset('css/admin-custom.css') . '?v=' . time() . '">'
-                    . '<script defer src="' . asset('js/trix-custom.js') . '?v=' . time() . '"></script>'
+                fn (): string => '<link rel="stylesheet" href="' . asset('css/admin-custom.css') . '?v=' . (file_exists(public_path('css/admin-custom.css')) ? filemtime(public_path('css/admin-custom.css')) : '1') . '">'
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn (): string => '<script src="' . asset('js/trix-custom.js') . '?v=' . (file_exists(public_path('js/trix-custom.js')) ? filemtime(public_path('js/trix-custom.js')) : '1') . '"></script>'
             )
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
