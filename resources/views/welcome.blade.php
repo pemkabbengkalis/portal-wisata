@@ -46,7 +46,7 @@
                         <h4 class="font-bold leading-tight group-hover:text-red-700 transition">
                             <a href="{{ route('news.show', $news->slug) }}">{{ $news->title }}</a>
                         </h4>
-                        <span class="text-gray-400 text-xs">{{ $news->published_at->diffForHumans() }}</span>
+                        <span class="text-gray-400 text-xs">{{ optional($news->published_at)->diffForHumans() }}</span>
                     </div>
                 </div>
                 @endforeach
@@ -578,7 +578,7 @@
                         <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ $news->summary }}</p>
                         <div class="flex items-center text-xs text-gray-400 space-x-4">
                             <span><i class="far fa-user mr-1"></i> {{ $news->user->name }}</span>
-                            <span><i class="far fa-clock mr-1"></i> {{ $news->published_at->format('d M Y') }}</span>
+                            <span><i class="far fa-clock mr-1"></i> {{ optional($news->published_at)->format('d M Y') }}</span>
                             <span><i class="far fa-eye mr-1"></i> {{ number_format($news->views) }}</span>
                         </div>
                     </div>

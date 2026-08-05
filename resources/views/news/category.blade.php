@@ -47,7 +47,7 @@
                         <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ $item->summary }}</p>
                         <div class="flex items-center text-xs text-gray-400 space-x-4">
                             <span><i class="far fa-user mr-1"></i> {{ $item->user->name }}</span>
-                            <span><i class="far fa-clock mr-1"></i> {{ $item->published_at->format('d M Y') }}</span>
+                            <span><i class="far fa-clock mr-1"></i> {{ optional($item->published_at)->format('d M Y') }}</span>
                             <span><i class="far fa-eye mr-1"></i> {{ number_format($item->views) }}</span>
                         </div>
                     </div>

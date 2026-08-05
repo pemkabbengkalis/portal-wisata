@@ -27,7 +27,7 @@
                     <img src="https://ui-avatars.com/api/?name={{ urlencode($news->user->name) }}&color=7F9CF5&background=EBF4FF" class="w-8 h-8 rounded-full mr-2">
                     <span>Oleh <span class="font-bold text-gray-900">{{ $news->user->name }}</span></span>
                 </div>
-                <span><i class="far fa-clock mr-1"></i> {{ $news->published_at->translatedFormat('d F Y, H:i') }} WIB</span>
+                <span><i class="far fa-clock mr-1"></i> {{ optional($news->published_at)->translatedFormat('d F Y, H:i') }} WIB</span>
                 <span><i class="far fa-eye mr-1"></i> {{ number_format($news->views) }} views</span>
             </div>
 
