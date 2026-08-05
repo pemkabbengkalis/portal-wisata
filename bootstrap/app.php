@@ -25,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'throttle.login' => \App\Http\Middleware\ThrottleFailedLogins::class,
         ]);
+        
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
