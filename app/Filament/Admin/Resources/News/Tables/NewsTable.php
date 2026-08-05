@@ -12,7 +12,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
@@ -35,7 +35,12 @@ class NewsTable
                 TextColumn::make('user.name')
                     ->label('Penulis')
                     ->sortable(),
-                ToggleColumn::make('status')
+                SelectColumn::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'publish' => 'Publish',
+                        'archive' => 'Archive',
+                    ])
                     ->sortable(),
                 IconColumn::make('is_headline')
                     ->boolean()
