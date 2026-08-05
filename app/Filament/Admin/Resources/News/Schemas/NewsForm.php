@@ -48,7 +48,7 @@ class NewsForm
                             ->required(),
                         Textarea::make('summary')
                             ->columnSpanFull(),
-                        RichEditor::make('content')
+                        \App\Filament\Forms\Components\Summernote::make('content')
                             ->required()
                             ->columnSpanFull(),
                     ]),
