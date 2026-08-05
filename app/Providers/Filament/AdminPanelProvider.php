@@ -56,6 +56,13 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Log Viewer')
+                    ->url(fn (): string => url('log-viewer'))
+                    ->icon('heroicon-o-document-text')
+                    ->group('System')
+                    ->sort(100),
+            ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             // ->widgets([
             //     AccountWidget::class,
