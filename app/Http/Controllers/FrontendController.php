@@ -29,7 +29,7 @@ class FrontendController extends Controller
         $setting = Setting::first();
         $categories = Category::withCount('news')->get();
         $headlines = News::where('is_headline', true)->where('status', 'publish')->latest()->take(5)->get();
-        $trending = News::where('is_trending', true)->where('status', 'publish')->latest()->take(5)->get();
+        $trending = News::where('is_trending', true)->where('status', 'publish')->latest()->take(3)->get();
         $breaking = News::where('is_breaking', true)->where('status', 'publish')->latest()->first();
         $latestNews = News::where('status', 'publish')->latest()->paginate(10);
         $sidebarAds = $this->sidebarAds();
