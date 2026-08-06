@@ -63,6 +63,24 @@ class AdminPanelProvider extends PanelProvider
             //     AccountWidget::class,
             //     FilamentInfoWidget::class,
             // ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn(): string => '
+                    <style>
+                                                
+                        /* Jadikan warna teks menu menjadi biru saat disorot */
+                        aside.fi-sidebar .fi-sidebar-item-button:hover,
+                        aside.fi-sidebar .fi-sidebar-item-button:hover span,
+                        aside.fi-sidebar .fi-sidebar-item-button:hover svg,
+                        aside.fi-sidebar a:hover,
+                        aside.fi-sidebar a:hover span,
+                        aside.fi-sidebar a:hover svg {
+                            color: #2563eb !important; /* blue-600 */
+                            transition: color 0.2s ease !important;
+                        }
+                    </style>
+                '
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
