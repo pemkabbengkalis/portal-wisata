@@ -15,6 +15,7 @@ use Illuminate\Support\ServiceProvider;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use App\Filament\Admin\Pages\Auth\Login;
 
 class AppServiceProvider extends ServiceProvider
 {
