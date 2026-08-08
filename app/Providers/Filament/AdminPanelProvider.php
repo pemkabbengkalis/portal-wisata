@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('bermasa')
             ->login(Login::class)
             ->brandName('PARIWISATA BENGKALIS')
             ->colors([
