@@ -6,7 +6,6 @@ use App\Filament\Admin\Resources\SliderResource\Pages;
 use App\Filament\Concerns\HasWebPConversion;
 use App\Services\ImageService;
 use App\Models\Slider;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -28,10 +27,26 @@ class SliderResource extends Resource
     protected static ?string $model = Slider::class;
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
-    
+
     protected static ?string $navigationLabel = 'Banners / Sliders';
     protected static string|\UnitEnum|null $navigationGroup = 'Konten';
     protected static ?int $navigationSort = 6;
+
+    /**
+     * Shared slider FileUpload — WebP conversion + deduplication, defined once.
+     * Reused in both the resource form and the inline edit modal.
+     */
+    private static function sliderImageUpload(): \Filament\Forms\Components\FileUpload
+    {
+        return self::makeWebPFileUpload(
+            fieldName: 'image',
+            directory: 'sliders',
+            quality: ImageService::getQualityForType('slider'),
+            sizes: self::getSizesForType('slider'),
+            required: true,
+            previewHeight: '200'
+        )->label('Gambar Slider');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -40,62 +55,13 @@ class SliderResource extends Resource
                 TextInput::make('title')
                     ->label('Judul / Keterangan')
                     ->maxLength(255),
-                    
+
                 TextInput::make('url')
                     ->label('Link URL')
                     ->url()
                     ->maxLength(255),
-                    
-                FileUpload::make('image')
-                    ->label('Gambar Slider')
-                    ->image()
-                    ->directory('sliders')
-                    ->disk('public')
-                    ->visibility('public')
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                    ->maxSize(15360) // 15MB
-                    ->deletable(true)
-                    ->reorderable(false)
-                    ->openable()
-                    ->downloadable()
-                    ->previewable(true)
-                    ->imagePreviewHeight('200')
-                    ->saveUploadedFileUsing(function ($file) {
-                        $imageService = app(ImageService::class);
-                        
-                        try {
-                            $result = $imageService->convertUploadedFile(
-                                $file,
-                                'sliders',
-                                ImageService::getQualityForType('slider'),
-                                self::getSizesForType('slider')
-                            );
-                            
-                            return $result['path'];
-                        } catch (\Exception $e) {
-                            \Log::error('WebP conversion failed: ' . $e->getMessage());
-                            return $file->store('sliders', 'public');
-                        }
-                    })
-                    ->deleteUploadedFileUsing(function ($file) {
-                        if (!$file) return;
-                        
-                        if (Storage::disk('public')->exists($file)) {
-                            Storage::disk('public')->delete($file);
-                        }
-                        
-                        $sizes = self::getSizesForType('slider');
-                        if (!empty($sizes)) {
-                            $pathInfo = pathinfo($file);
-                            foreach (array_keys($sizes) as $sizeName) {
-                                $sizedPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '_' . $sizeName . '.webp';
-                                if (Storage::disk('public')->exists($sizedPath)) {
-                                    Storage::disk('public')->delete($sizedPath);
-                                }
-                            }
-                        }
-                    })
-                    ->required(),
+
+                static::sliderImageUpload(),
 
                 TextInput::make('order')
                     ->label('Urutan')
@@ -138,7 +104,7 @@ class SliderResource extends Resource
                     ->modalHeading('Edit Slider')
                     ->modalSubmitActionLabel('Simpan')
                     ->modalCancelActionLabel('Batal')
-                    ->fillForm(fn ($record) => [
+                    ->fillForm(fn($record) => [
                         'title' => $record->title,
                         'url' => $record->url,
                         'image' => $record->image,
@@ -149,67 +115,20 @@ class SliderResource extends Resource
                         TextInput::make('title')
                             ->label('Judul / Keterangan')
                             ->maxLength(255),
-                        
+
                         TextInput::make('url')
                             ->label('Link URL')
                             ->url()
                             ->maxLength(255),
-                        
-                        FileUpload::make('image')
-                            ->label('Gambar Slider')
-                            ->image()
-                            ->directory('sliders')
-                            ->disk('public')
-                            ->visibility('public')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(15360) // 15MB
-                            ->deletable(true)
-                            ->openable()
-                            ->downloadable()
-                            ->previewable(true)
-                            ->imagePreviewHeight('200')
-                            ->saveUploadedFileUsing(function ($file) {
-                                $imageService = app(ImageService::class);
-                                
-                                try {
-                                    $result = $imageService->convertUploadedFile(
-                                        $file,
-                                        'sliders',
-                                        ImageService::getQualityForType('slider'),
-                                        self::getSizesForType('slider')
-                                    );
-                                    
-                                    return $result['path'];
-                                } catch (\Exception $e) {
-                                    \Log::error('WebP conversion failed: ' . $e->getMessage());
-                                    return $file->store('sliders', 'public');
-                                }
-                            })
-                            ->deleteUploadedFileUsing(function ($file) {
-                                if (!$file) return;
-                                
-                                if (Storage::disk('public')->exists($file)) {
-                                    Storage::disk('public')->delete($file);
-                                }
-                                
-                                $sizes = self::getSizesForType('slider');
-                                if (!empty($sizes)) {
-                                    $pathInfo = pathinfo($file);
-                                    foreach (array_keys($sizes) as $sizeName) {
-                                        $sizedPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '_' . $sizeName . '.webp';
-                                        if (Storage::disk('public')->exists($sizedPath)) {
-                                            Storage::disk('public')->delete($sizedPath);
-                                        }
-                                    }
-                                }
-                            })
-                            ->required(),
-                        
+
+                        // Reuse the same configured upload — no duplication
+                        static::sliderImageUpload(),
+
                         TextInput::make('order')
                             ->label('Urutan')
                             ->numeric()
                             ->default(0),
-                        
+
                         Toggle::make('is_active')
                             ->label('Aktif')
                             ->default(true),
@@ -222,6 +141,7 @@ class SliderResource extends Resource
                             ->success()
                             ->send();
                     }),
+
                 Action::make('deleteImage')
                     ->label('Hapus Image')
                     ->color('danger')
@@ -231,11 +151,29 @@ class SliderResource extends Resource
                     ->modalDescription('Apakah Anda yakin ingin menghapus image slider ini?')
                     ->modalSubmitActionLabel('Ya, Hapus')
                     ->modalCancelActionLabel('Batal')
-                    ->visible(fn ($record) => $record && $record->image)
+                    ->visible(fn($record) => $record && $record->image)
                     ->action(function ($record) {
                         if ($record->image && Storage::disk('public')->exists($record->image)) {
                             Storage::disk('public')->delete($record->image);
                         }
+
+                        // Also clean up sized variants
+                        $sizes = self::getSizesForType('slider');
+                        if (!empty($sizes)) {
+                            $pathInfo = pathinfo($record->image ?? '');
+                            foreach (array_keys($sizes) as $sizeName) {
+                                $sizedPath = ($pathInfo['dirname'] ?? '') . '/' . ($pathInfo['filename'] ?? '') . '_' . $sizeName . '.webp';
+                                if (Storage::disk('public')->exists($sizedPath)) {
+                                    Storage::disk('public')->delete($sizedPath);
+                                }
+                            }
+                        }
+
+                        // Free hash-map slot
+                        if ($record->image) {
+                            app(ImageService::class)->removeFromHashMap('sliders', $record->image);
+                        }
+
                         $record->update(['image' => null]);
                         Notification::make()
                             ->title('Berhasil')
@@ -243,12 +181,27 @@ class SliderResource extends Resource
                             ->success()
                             ->send();
                     }),
+
                 DeleteAction::make()
                     ->label('Hapus')
                     ->action(function ($record) {
                         if ($record->image && Storage::disk('public')->exists($record->image)) {
                             Storage::disk('public')->delete($record->image);
                         }
+
+                        // Clean up sized variants and hash map
+                        $sizes = self::getSizesForType('slider');
+                        if (!empty($sizes) && $record->image) {
+                            $pathInfo = pathinfo($record->image);
+                            foreach (array_keys($sizes) as $sizeName) {
+                                $sizedPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '_' . $sizeName . '.webp';
+                                if (Storage::disk('public')->exists($sizedPath)) {
+                                    Storage::disk('public')->delete($sizedPath);
+                                }
+                            }
+                            app(ImageService::class)->removeFromHashMap('sliders', $record->image);
+                        }
+
                         $record->delete();
                         Notification::make()
                             ->title('Berhasil')

@@ -15,13 +15,25 @@ class CheckMaintenanceMode
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Skip maintenance check for admin routes
-        if ($request->is('admin/*') || $request->is('admin')) {
+        // Skip maintenance check for admin routes, login routes, and livewire endpoints (needed for login forms)
+        if ($request->is('admin/*') || $request->is('admin') || 
+            $request->is('marlong/*') || $request->is('marlong') ||
+            $request->is('login') || $request->is('login/*') ||
+            $request->is('livewire*')) {
             return $next($request);
         }
 
-        // Skip for authenticated admin users accessing frontend
-        if (auth()->check() && auth()->user()->hasRole('super_admin')) {
+        // Check if user is authenticated in any guard
+        $isLoggedIn = false;
+        foreach (array_keys(config('auth.guards', [])) as $guard) {
+            if (auth()->guard($guard)->check()) {
+                $isLoggedIn = true;
+                break;
+            }
+        }
+
+        // Skip for authenticated users (admins) accessing frontend
+        if ($isLoggedIn) {
             return $next($request);
         }
 

@@ -12,7 +12,7 @@
                     @foreach($headlines as $news)
                     <div class="swiper-slide relative">
                         <x-responsive-image 
-                            :src="$news->thumbnail" 
+                            :src="asset('storage/' . $news->thumbnail)" 
                             :alt="$news->title"
                             class="w-full h-full object-cover"
                             :lazy="false"

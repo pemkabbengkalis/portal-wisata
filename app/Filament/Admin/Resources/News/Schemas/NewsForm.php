@@ -7,9 +7,7 @@ use App\Services\ImageService;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Section;
@@ -52,13 +50,16 @@ class NewsForm
                             ->required()
                             ->columnSpanFull(),
                     ]),
+
                 Section::make('Media & Status')
                     ->components([
                         self::makeWebPFileUpload(
-                            directory: 'news',
-                            quality: ImageService::getQualityForType('news'),
-                            sizes: self::getSizesForType('news'),
-                            keepOriginal: false
+                            fieldName:     'thumbnail',
+                            directory:     'news',
+                            quality:       ImageService::getQualityForType('news'),
+                            sizes:         self::getSizesForType('news'),
+                            required:      false,
+                            previewHeight: '200'
                         ),
                         TextInput::make('video_url')
                             ->url()
@@ -74,7 +75,7 @@ class NewsForm
                             ]),
                         Select::make('status')
                             ->options([
-                                'draft' => 'Draft',
+                                'draft'   => 'Draft',
                                 'publish' => 'Publish',
                                 'archive' => 'Archive',
                             ])
@@ -82,6 +83,7 @@ class NewsForm
                             ->default('draft'),
                         DateTimePicker::make('published_at'),
                     ]),
+
                 Section::make('SEO')
                     ->components([
                         TextInput::make('seo_title'),

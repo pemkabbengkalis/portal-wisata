@@ -2,8 +2,9 @@
 
 namespace App\Filament\Admin\Resources\Destinations\Schemas;
 
+use App\Filament\Concerns\HasWebPConversion;
 use App\Models\DestinationCategory;
-use Filament\Forms\Components\FileUpload;
+use App\Services\ImageService;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -14,6 +15,8 @@ use Illuminate\Support\Str;
 
 class DestinationForm
 {
+    use HasWebPConversion;
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -63,26 +66,14 @@ class DestinationForm
 
                 Section::make('Foto Destinasi')
                     ->components([
-                        FileUpload::make('image')
-                            ->label('Upload Foto Destinasi')
-                            ->image()
-                            ->directory('destinations')
-                            ->disk('public')
-                            ->visibility('public')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
-                            ->maxSize(15360) // 15MB
-                            ->deletable(true)
-                            ->reorderable(false)
-                            ->openable()
-                            ->downloadable()
-                            ->previewable(true)
-                            ->imagePreviewHeight('200')
-                            ->deleteUploadedFileUsing(function ($file) {
-                                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($file)) {
-                                    \Illuminate\Support\Facades\Storage::disk('public')->delete($file);
-                                }
-                            })
-                            ->columnSpanFull(),
+                        self::makeWebPFileUpload(
+                            fieldName:     'image',
+                            directory:     'destinations',
+                            quality:       ImageService::getQualityForType('destination'),
+                            sizes:         self::getSizesForType('destination'),
+                            required:      false,
+                            previewHeight: '200'
+                        )->columnSpanFull(),
                     ]),
 
                 Section::make('Media Sosial')

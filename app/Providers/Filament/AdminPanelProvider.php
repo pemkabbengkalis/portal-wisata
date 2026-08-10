@@ -31,8 +31,8 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('bermasa')
-            ->login(Login::class)
+            ->path('admin')
+            ->login()
             ->brandName('PARIWISATA BENGKALIS')
             ->colors([
                 'primary' => Color::Amber,
@@ -95,6 +95,45 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn(): string => '
+                    <style>
+                        /* Gradasi ungu dan putih untuk halaman admin */
+                        body, .fi-layout {
+                            background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 50%, #e9d5ff 100%) !important;
+                            background-attachment: fixed !important;
+                        }
+                        
+                        /* Jadikan warna teks menu menjadi biru saat disorot */
+                        aside.fi-sidebar .fi-sidebar-item-button:hover,
+                        aside.fi-sidebar .fi-sidebar-item-button:hover span,
+                        aside.fi-sidebar .fi-sidebar-item-button:hover svg,
+                        aside.fi-sidebar a:hover,
+                        aside.fi-sidebar a:hover span,
+                        aside.fi-sidebar a:hover svg {
+                            color: #2563eb !important; /* blue-600 */
+                            transition: color 0.2s ease !important;
+                        }
+                    </style>
+                '
+            )
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn(): string => \Illuminate\Support\Facades\Blade::render('
+                    <div style="display: flex; align-items: center; margin-right: 1rem;">
+                        <x-filament::button
+                            href="{{ url(\'/\') }}"
+                            tag="a"
+                            target="_blank"
+                            icon="heroicon-o-globe-alt"
+                            color="primary"
+                        >
+                            View Website
+                        </x-filament::button>
+                    </div>
+                ')
+            );
     }
 }

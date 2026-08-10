@@ -100,44 +100,120 @@ class ImageService
         int $quality = 85, 
         array $sizes = []
     ): array {
-        // Generate unique filename
-        $filename = uniqid() . '_' . time();
-        $webpFilename = $filename . '.webp';
-        
+        return $this->convertUploadedFileWithDedup($uploadedFile, $directory, $quality, $sizes);
+    }
+
+    /**
+     * Convert uploaded file to WebP with deduplication.
+     * If a file with the same content hash already exists in the directory,
+     * the existing file is returned without reprocessing.
+     *
+     * @param mixed  $uploadedFile  Uploaded file instance
+     * @param string $directory     Target directory in storage
+     * @param int    $quality       WebP quality
+     * @param array  $sizes         Sizes to generate
+     * @return array ['path' => main path, 'sizes' => [...], 'deduplicated' => bool]
+     */
+    public function convertUploadedFileWithDedup(
+        $uploadedFile,
+        string $directory = 'images',
+        int $quality = 85,
+        array $sizes = []
+    ): array {
         // Ensure directory exists
         $fullDirectory = Storage::disk('public')->path($directory);
         if (!File::exists($fullDirectory)) {
             File::makeDirectory($fullDirectory, 0755, true);
         }
 
-        // Load and save as WebP
-        $image = $this->manager->read($uploadedFile);
-        $mainPath = $directory . '/' . $webpFilename;
-        $fullPath = Storage::disk('public')->path($mainPath);
-        
-        $image->toWebp($quality)->save($fullPath);
+        // --- Deduplication: hash the raw uploaded bytes ---
+        $tempPath  = method_exists($uploadedFile, 'getRealPath')
+            ? $uploadedFile->getRealPath()
+            : (string) $uploadedFile;
+        $fileHash  = md5_file($tempPath);
+        $hashFile  = $fullDirectory . '/.hashes';
 
-        $result = [
-            'path' => $mainPath,
-            'sizes' => []
-        ];
-
-        // Generate different sizes
-        if (!empty($sizes)) {
-            foreach ($sizes as $sizeName => $maxWidth) {
-                $sizedFilename = $filename . '_' . $sizeName . '.webp';
-                $sizedPath = $directory . '/' . $sizedFilename;
-                $sizedFullPath = Storage::disk('public')->path($sizedPath);
-
-                $sizedImage = clone $image;
-                $sizedImage->scale(width: $maxWidth);
-                $sizedImage->toWebp($quality)->save($sizedFullPath);
-
-                $result['sizes'][$sizeName] = $sizedPath;
+        // Load existing hash map
+        $hashMap = [];
+        if (File::exists($hashFile)) {
+            $stored = json_decode(File::get($hashFile), true);
+            if (is_array($stored)) {
+                $hashMap = $stored;
             }
         }
 
+        // If same file already processed, return cached result without reprocessing
+        if (isset($hashMap[$fileHash]) && Storage::disk('public')->exists($hashMap[$fileHash]['path'])) {
+            return array_merge($hashMap[$fileHash], ['deduplicated' => true]);
+        }
+
+        // --- Process: load once, convert once ---
+        $filename      = uniqid() . '_' . time();
+        $webpFilename  = $filename . '.webp';
+        $image         = $this->manager->read($tempPath);
+        $mainPath      = $directory . '/' . $webpFilename;
+        $fullPath      = Storage::disk('public')->path($mainPath);
+
+        $image->toWebp($quality)->save($fullPath);
+
+        $result = [
+            'path'          => $mainPath,
+            'sizes'         => [],
+            'deduplicated'  => false,
+        ];
+
+        // Generate different sizes (reuse already-loaded $image)
+        foreach ($sizes as $sizeName => $maxWidth) {
+            $sizedFilename = $filename . '_' . $sizeName . '.webp';
+            $sizedPath     = $directory . '/' . $sizedFilename;
+            $sizedFullPath = Storage::disk('public')->path($sizedPath);
+
+            $sizedImage = clone $image;
+            $sizedImage->scale(width: $maxWidth);
+            $sizedImage->toWebp($quality)->save($sizedFullPath);
+
+            $result['sizes'][$sizeName] = $sizedPath;
+        }
+
+        // Persist hash → path mapping for future dedup
+        $hashMap[$fileHash] = [
+            'path'  => $result['path'],
+            'sizes' => $result['sizes'],
+        ];
+        File::put($hashFile, json_encode($hashMap, JSON_PRETTY_PRINT));
+
         return $result;
+    }
+
+    /**
+     * Remove a path entry from the deduplication hash map.
+     * Call this when deleting a file so its hash slot is freed.
+     *
+     * @param string $directory
+     * @param string $filePath  Storage-relative path of the deleted file
+     */
+    public function removeFromHashMap(string $directory, string $filePath): void
+    {
+        $fullDirectory = Storage::disk('public')->path($directory);
+        $hashFile      = $fullDirectory . '/.hashes';
+
+        if (!File::exists($hashFile)) {
+            return;
+        }
+
+        $hashMap = json_decode(File::get($hashFile), true);
+        if (!is_array($hashMap)) {
+            return;
+        }
+
+        foreach ($hashMap as $hash => $entry) {
+            if (($entry['path'] ?? '') === $filePath) {
+                unset($hashMap[$hash]);
+                break;
+            }
+        }
+
+        File::put($hashFile, json_encode($hashMap, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -261,11 +337,14 @@ class ImageService
     public static function getQualityForType(string $type): int
     {
         return match($type) {
-            'gallery', 'slider' => 90, // High quality for galleries
-            'news', 'page' => 85,      // Good quality for content
-            'thumbnail' => 80,          // Lower quality for thumbnails
-            'advertisement' => 85,      // Good quality for ads
-            default => 85
+            'gallery', 'slider'        => 90, // High quality for galleries/sliders
+            'news', 'page'             => 85, // Good quality for content
+            'thumbnail'                => 80, // Lower quality for thumbnails
+            'advertisement'            => 85, // Good quality for ads
+            'destination'              => 88, // High quality for destination photos
+            'setting'                  => 85, // Settings images (logo, favicon, etc.)
+            'video'                    => 85, // Video thumbnails
+            default                    => 85,
         };
     }
 }

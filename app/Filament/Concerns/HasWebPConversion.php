@@ -10,21 +10,27 @@ use Illuminate\Support\Facades\File;
 trait HasWebPConversion
 {
     /**
-     * Configure FileUpload component to auto-convert to WebP
+     * Build a single-image FileUpload that:
+     *  - Converts the uploaded image to WebP on save (one pass, no double work)
+     *  - Deduplicates: identical files return the cached path immediately
+     *  - Cleans up the hash-map entry and sized variants on delete
      *
-     * @param string $directory Directory in storage/app/public
-     * @param int $quality WebP quality (0-100)
-     * @param array $sizes Additional sizes to generate ['thumbnail' => 150, 'medium' => 600]
-     * @param bool $keepOriginal Keep original image file
-     * @return FileUpload
+     * @param string $fieldName   Form field name (e.g. 'image', 'thumbnail', 'logo')
+     * @param string $directory   Storage directory
+     * @param int    $quality     WebP quality (0-100)
+     * @param array  $sizes       Responsive sizes: ['thumbnail' => 150, 'medium' => 600]
+     * @param bool   $required    Whether the field is required
+     * @param string $previewHeight  CSS height for the image preview
      */
     protected static function makeWebPFileUpload(
+        string $fieldName = 'thumbnail',
         string $directory = 'images',
         int $quality = 85,
         array $sizes = [],
-        bool $keepOriginal = false
+        bool $required = false,
+        string $previewHeight = '200'
     ): FileUpload {
-        return FileUpload::make('thumbnail')
+        return FileUpload::make($fieldName)
             ->image()
             ->directory($directory)
             ->disk('public')
@@ -36,35 +42,37 @@ trait HasWebPConversion
             ->openable()
             ->downloadable()
             ->previewable(true)
-            ->imagePreviewHeight('200')
-            ->saveUploadedFileUsing(function ($file) use ($directory, $quality, $sizes, $keepOriginal) {
+            ->imagePreviewHeight($previewHeight)
+            // -- Save: one-pass WebP conversion with deduplication --
+            ->saveUploadedFileUsing(function ($file) use ($directory, $quality, $sizes) {
+                /** @var ImageService $imageService */
                 $imageService = app(ImageService::class);
-                
+
                 try {
-                    // Convert to WebP
-                    $result = $imageService->convertUploadedFile(
+                    $result = $imageService->convertUploadedFileWithDedup(
                         $file,
                         $directory,
                         $quality,
                         $sizes
                     );
-                    
+
                     return $result['path'];
                 } catch (\Exception $e) {
-                    // If conversion fails, fall back to default upload
                     \Log::error('WebP conversion failed: ' . $e->getMessage());
                     return $file->store($directory, 'public');
                 }
             })
-            ->deleteUploadedFileUsing(function ($file) use ($sizes) {
-                if (!$file) return;
-                
-                // Delete main file
+            // -- Delete: remove file, sized variants, and hash-map entry --
+            ->deleteUploadedFileUsing(function ($file) use ($directory, $sizes) {
+                if (!$file) {
+                    return;
+                }
+
                 if (Storage::disk('public')->exists($file)) {
                     Storage::disk('public')->delete($file);
                 }
-                
-                // Delete all generated sizes
+
+                // Remove sized variants
                 if (!empty($sizes)) {
                     $pathInfo = pathinfo($file);
                     foreach (array_keys($sizes) as $sizeName) {
@@ -74,18 +82,21 @@ trait HasWebPConversion
                         }
                     }
                 }
-            });
+
+                // Free the hash-map slot so the same file can be re-uploaded fresh
+                app(ImageService::class)->removeFromHashMap($directory, $file);
+            })
+            ->when($required, fn(FileUpload $f) => $f->required());
     }
 
     /**
-     * Configure FileUpload for multiple images with WebP conversion
+     * Build a multiple-image FileUpload with WebP conversion and deduplication.
      *
-     * @param string $fieldName Field name
-     * @param string $directory Directory in storage/app/public
-     * @param int $quality WebP quality (0-100)
-     * @param array $sizes Additional sizes to generate
-     * @param int $maxFiles Maximum number of files
-     * @return FileUpload
+     * @param string $fieldName
+     * @param string $directory
+     * @param int    $quality
+     * @param array  $sizes
+     * @param int    $maxFiles
      */
     protected static function makeMultipleWebPFileUpload(
         string $fieldName = 'images',
@@ -110,29 +121,32 @@ trait HasWebPConversion
             ->previewable(true)
             ->imagePreviewHeight('200')
             ->saveUploadedFileUsing(function ($file) use ($directory, $quality, $sizes) {
+                /** @var ImageService $imageService */
                 $imageService = app(ImageService::class);
-                
+
                 try {
-                    $result = $imageService->convertUploadedFile(
+                    $result = $imageService->convertUploadedFileWithDedup(
                         $file,
                         $directory,
                         $quality,
                         $sizes
                     );
-                    
+
                     return $result['path'];
                 } catch (\Exception $e) {
                     \Log::error('WebP conversion failed: ' . $e->getMessage());
                     return $file->store($directory, 'public');
                 }
             })
-            ->deleteUploadedFileUsing(function ($file) use ($sizes) {
-                if (!$file) return;
-                
+            ->deleteUploadedFileUsing(function ($file) use ($directory, $sizes) {
+                if (!$file) {
+                    return;
+                }
+
                 if (Storage::disk('public')->exists($file)) {
                     Storage::disk('public')->delete($file);
                 }
-                
+
                 if (!empty($sizes)) {
                     $pathInfo = pathinfo($file);
                     foreach (array_keys($sizes) as $sizeName) {
@@ -142,40 +156,27 @@ trait HasWebPConversion
                         }
                     }
                 }
+
+                app(ImageService::class)->removeFromHashMap($directory, $file);
             });
     }
 
     /**
-     * Get responsive sizes for different content types
+     * Get responsive sizes for different content types.
      *
-     * @param string $type Content type (news, gallery, slider, etc)
-     * @return array
+     * @param string $type Content type (news, gallery, slider, advertisement, destination, setting)
      */
     protected static function getSizesForType(string $type): array
     {
-        return match($type) {
-            'news' => [
-                'thumbnail' => 150,
-                'medium' => 600,
-                'large' => 1200,
-            ],
-            'gallery' => [
-                'thumbnail' => 300,
-                'medium' => 800,
-                'large' => 1600,
-            ],
-            'slider' => [
-                'thumbnail' => 400,
-                'large' => 1920,
-            ],
-            'advertisement' => [
-                'small' => 300,
-                'medium' => 600,
-            ],
-            default => [
-                'thumbnail' => 150,
-                'medium' => 600,
-            ]
+        return match ($type) {
+            'news' => ['thumbnail' => 150, 'medium' => 600, 'large' => 1200],
+            'gallery' => ['thumbnail' => 300, 'medium' => 800, 'large' => 1600],
+            'slider' => ['thumbnail' => 400, 'large' => 1920],
+            'advertisement' => ['small' => 300, 'medium' => 600],
+            'destination' => ['thumbnail' => 300, 'medium' => 800],
+            'setting' => ['thumbnail' => 150, 'medium' => 600],
+            'video' => ['thumbnail' => 300, 'medium' => 600],
+            default => ['thumbnail' => 150, 'medium' => 600],
         };
     }
 }

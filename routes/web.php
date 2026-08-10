@@ -23,3 +23,8 @@ Route::get('/user/dashboard', [DashboardController::class, 'index'])->name('dash
 Route::any('storage/livewire-tmp/{path?}', function () {
     abort(403, 'Access denied');
 })->where('path', '.*');
+
+// Fallback route so that web middleware (like maintenance mode) runs on 404s
+Route::fallback(function () {
+    abort(404);
+});
