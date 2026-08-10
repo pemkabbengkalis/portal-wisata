@@ -36,7 +36,7 @@
 
     <!-- Preloader -->
     <div id="site-preloader"
-        class="fixed inset-0 z-[9999] bg-white flex items-center justify-center transition-opacity duration-500000">
+        class="fixed inset-0 z-[9999] bg-white flex items-center justify-center transition-opacity duration-5000000">
         <div class="relative flex items-center justify-center">
             <!-- Donut Spinner -->
             <div class="w-24 h-24 border-4 border-gray-200 border-t-red-700 rounded-full animate-spin"></div>
@@ -90,8 +90,8 @@
                     @else
                         {{-- Fallback emblem when no logo is set --}}
                         <div class="h-14 w-14 rounded-full bg-gradient-to-br from-red-600 to-red-800
-                                        flex items-center justify-center flex-shrink-0 shadow
-                                        group-hover:scale-105 transition-transform duration-200">
+                                                    flex items-center justify-center flex-shrink-0 shadow
+                                                    group-hover:scale-105 transition-transform duration-200">
                             <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                             </svg>
