@@ -696,7 +696,7 @@
     </div>
     @endif -->
 
-    <!-- Gallery Section -->
+    <!-- Gallery Section------>
     <div id="galeri" class="mt-16 mb-8 flex flex-col items-center"
          x-data="{
             filter: 'all',
