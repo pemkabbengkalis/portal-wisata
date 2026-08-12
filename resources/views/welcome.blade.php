@@ -793,14 +793,16 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="scale-100 opacity-100"
                  x-transition:leave-end="scale-90 opacity-0">
-                {{-- Close Button --}}
-                <button @click="closeVideo()"
-                        class="absolute -top-10 right-0 text-white/80 hover:text-white transition focus:outline-none"
-                        aria-label="Tutup video">
-                    <i class="fas fa-times text-3xl"></i>
-                </button>
                 {{-- Video Title --}}
-                <p x-text="videoTitle" class="text-white font-semibold text-lg mb-3 truncate"></p>
+                <div class="flex items-center justify-between mb-3">
+                    <p x-text="videoTitle" class="text-white font-semibold text-lg truncate pr-4"></p>
+                    {{-- Close Button --}}
+                    <button @click="closeVideo()"
+                            class="flex-shrink-0 text-white/80 hover:text-white bg-black/40 hover:bg-black/70 rounded-full w-9 h-9 flex items-center justify-center transition focus:outline-none"
+                            aria-label="Tutup video">
+                        <i class="fas fa-times text-base"></i>
+                    </button>
+                </div>
                 {{-- Iframe Container (16:9) --}}
                 <div class="relative w-full" style="padding-bottom: 56.25%;">
                     <iframe
