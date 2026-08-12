@@ -1,10 +1,6 @@
 <div class="lc-root">
 
-    {{-- ============================================================
-    STYLES — Capsule Login · Portal Wisata
-    Senior UI/UX approach: typography scale, spacing rhythm,
-    colour system, glassmorphism, micro-interactions
-    ============================================================ --}}
+    
     <style>
         /* ── Google Font ── */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -540,13 +536,13 @@
         }
     </style>
 
-    {{-- ========================== MARKUP ========================== --}}
+    
     <div class="lc-card">
 
-        {{-- ── Header ── --}}
+        
         <div class="lc-header">
 
-            {{-- Logo Pill --}}
+            
             <div class="lc-logo-pill">
                 <div class="lc-logo-icon">🌏</div>
                 <span class="lc-logo-text">Portal Wisata</span>
@@ -557,23 +553,25 @@
             <div class="lc-accent"></div>
         </div>
 
-        {{-- ── Render Hook Before ── --}}
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE, scopes: $this->getRenderHookScopes()) }}
+        
+        <?php echo e(\Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE, scopes: $this->getRenderHookScopes())); ?>
 
-        {{-- ── Form ── --}}
+
+        
         <form wire:submit="authenticate">
             <div class="lc-form" id="lc-form">
-                {{ $this->form }}
+                <?php echo e($this->form); ?>
+
             </div>
 
-            {{-- Divider --}}
+            
             <div class="lc-divider">
                 <div class="lc-divider-line"></div>
                 <span class="lc-divider-label">Akses Aman</span>
                 <div class="lc-divider-line"></div>
             </div>
 
-            {{-- Submit --}}
+            
             <div class="lc-btn-wrap">
                 <button type="submit" class="lc-btn" id="lc-submit-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"
@@ -586,10 +584,11 @@
             </div>
         </form>
 
-        {{-- ── Render Hook After ── --}}
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_AFTER, scopes: $this->getRenderHookScopes()) }}
+        
+        <?php echo e(\Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_AFTER, scopes: $this->getRenderHookScopes())); ?>
 
-        {{-- Footer --}}
+
+        
         <div class="lc-footer">
             <div class="lc-footer-badge">
                 <span class="lc-footer-dot"></span>
@@ -599,7 +598,7 @@
 
     </div>
 
-    {{-- ========================== JS ========================== --}}
+    
     <script>
         (function () {
             function patchForm() {
@@ -625,7 +624,29 @@
         })();
     </script>
 
-    {{-- Filament Modals --}}
-    <x-filament-actions::modals />
+    
+    <?php if (isset($component)) { $__componentOriginal028e05680f6c5b1e293abd7fbe5f9758 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal028e05680f6c5b1e293abd7fbe5f9758 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-actions::components.modals','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-actions::modals'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal028e05680f6c5b1e293abd7fbe5f9758)): ?>
+<?php $attributes = $__attributesOriginal028e05680f6c5b1e293abd7fbe5f9758; ?>
+<?php unset($__attributesOriginal028e05680f6c5b1e293abd7fbe5f9758); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal028e05680f6c5b1e293abd7fbe5f9758)): ?>
+<?php $component = $__componentOriginal028e05680f6c5b1e293abd7fbe5f9758; ?>
+<?php unset($__componentOriginal028e05680f6c5b1e293abd7fbe5f9758); ?>
+<?php endif; ?>
 
 </div>
+<?php /**PATH C:\laragon\www\portal-wisata\resources\views/filament/admin/pages/auth/login.blade.php ENDPATH**/ ?>
