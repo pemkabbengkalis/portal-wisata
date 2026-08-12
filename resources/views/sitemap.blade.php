@@ -9,7 +9,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
         <priority>1.0</priority>
     </url>
 
-```
 @foreach ($news as $item)
 <url>
     <loc>{{ route('news.show', $item->slug) }}</loc>
@@ -18,6 +17,5 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
     <priority>0.8</priority>
 </url>
 @endforeach
-```
 
 </urlset>
