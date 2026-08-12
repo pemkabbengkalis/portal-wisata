@@ -32,6 +32,11 @@ class EditSetting extends EditRecord
         // Clear maintenance mode cache after saving
         Cache::forget('maintenance_mode');
         Cache::forget('maintenance_settings');
+
+        // Clear frontend setting cache (digunakan di semua halaman)
+        Cache::forget('setting:first');
+        Cache::forget('categories:with_count');
+        Cache::forget('news:breaking');
         
         // Update maintenance started timestamp if enabled
         if ($this->record->maintenance_mode && $this->record->isDirty('maintenance_mode')) {

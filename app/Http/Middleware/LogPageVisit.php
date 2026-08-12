@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\AnalyseThreatJob;
 use App\Models\ActivityLog;
-use App\Services\ThreatDetectionService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +12,7 @@ class LogPageVisit
 {
     /**
      * Handle an incoming request.
-     * Logs page visits, detects admin probing, and triggers threat analysis.
+     * Logs page visits, detects admin probing, dan men-dispatch threat analysis ke background queue.
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -38,7 +38,7 @@ class LogPageVisit
                 $activity = 'admin_probe';
             }
 
-            ActivityLog::create([
+            $log = ActivityLog::create([
                 'user_id'    => $userId,
                 'activity'   => $activity,
                 'url'        => $url,
@@ -46,9 +46,9 @@ class LogPageVisit
                 'user_agent' => $request->userAgent(),
             ]);
 
-            // Run threat analysis for every request (brute force, rate abuse, admin probe)
+            // Dispatch threat analysis ke background queue — tidak memblokir HTTP response
             if ($isAdminProbe || $activity === 'page_visit') {
-                app(ThreatDetectionService::class)->analyse($ip, $userId);
+                AnalyseThreatJob::dispatch($ip, $userId, $log->id);
             }
         }
 

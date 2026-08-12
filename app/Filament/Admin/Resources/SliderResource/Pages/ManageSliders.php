@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\SliderResource\Pages;
 use App\Filament\Admin\Resources\SliderResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Support\Facades\Cache;
 
 class ManageSliders extends ManageRecords
 {
@@ -15,5 +16,10 @@ class ManageSliders extends ManageRecords
         return [
             Actions\CreateAction::make(),
         ];
+    }
+
+    protected function afterSave(): void
+    {
+        Cache::forget('sliders:active');
     }
 }
