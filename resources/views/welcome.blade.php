@@ -697,7 +697,33 @@
     @endif -->
 
     <!-- Gallery Section -->
-    <div id="galeri" class="mt-16 mb-8 flex flex-col items-center" x-data="{ filter: 'all' }">
+    <div id="galeri" class="mt-16 mb-8 flex flex-col items-center"
+         x-data="{
+            filter: 'all',
+            videoModal: false,
+            videoUrl: '',
+            videoTitle: '',
+            openVideo(url, title) {
+                this.videoTitle = title;
+                this.videoUrl = this.getEmbedUrl(url);
+                this.videoModal = true;
+            },
+            closeVideo() {
+                this.videoModal = false;
+                this.videoUrl = '';
+                this.videoTitle = '';
+            },
+            getEmbedUrl(url) {
+                // YouTube: youtu.be/ID or youtube.com/watch?v=ID
+                let ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+                if (ytMatch) return 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0';
+                // Vimeo: vimeo.com/ID
+                let vmMatch = url.match(/vimeo\.com\/(\d+)/);
+                if (vmMatch) return 'https://player.vimeo.com/video/' + vmMatch[1] + '?autoplay=1';
+                // Already an embed or other URL: return as-is
+                return url;
+            }
+         }">
         <h3 class="text-4xl font-bold text-slate-900 mb-2">Galeri Kegiatan</h3>
         <p class="text-slate-500 mb-8 text-lg">Momen pelayanan dan kegiatan kami</p>
         
@@ -713,6 +739,7 @@
             <div x-show="filter === 'all' || filter === '{{ $gallery->video_url ? 'video' : 'photo' }}'" class="group block relative overflow-hidden rounded-xl shadow-sm aspect-square bg-gray-100 transition-all duration-300">
                 @if($gallery->video_url)
                     @if($gallery->image)
+                        {{-- Thumbnail + play button → buka modal iframe --}}
                         <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                         <div class="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
                             <i class="fas fa-play-circle text-4xl text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition"></i>
@@ -720,8 +747,10 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4 pointer-events-none">
                             <h4 class="text-white font-bold text-sm md:text-base transform translate-y-4 group-hover:translate-y-0 transition duration-300">{{ $gallery->title }}</h4>
                         </div>
-                        <a href="{{ $gallery->video_url }}" target="_blank" class="absolute inset-0 z-10"></a>
+                        <button @click="openVideo('{{ $gallery->video_url }}', '{{ addslashes($gallery->title) }}')"
+                                class="absolute inset-0 z-10 w-full h-full cursor-pointer" aria-label="Putar video {{ $gallery->title }}"></button>
                     @else
+                        {{-- Tanpa thumbnail → langsung embed iframe --}}
                         <iframe src="{{ $gallery->video_url }}" class="w-full h-full object-cover" frameborder="0" allowfullscreen></iframe>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-4 pointer-events-none">
                             <h4 class="text-white font-bold text-sm md:text-base transform translate-y-4 group-hover:translate-y-0 transition duration-300">{{ $gallery->title }}</h4>
@@ -744,5 +773,45 @@
             <p>Belum ada foto/video galeri.</p>
         </div>
         @endif
+
+        {{-- Video Modal --}}
+        <div x-show="videoModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             style="display:none;"
+             class="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 p-4"
+             @keydown.escape.window="closeVideo()"
+             @click.self="closeVideo()">
+            <div class="relative w-full max-w-4xl"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="scale-90 opacity-0"
+                 x-transition:enter-end="scale-100 opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="scale-100 opacity-100"
+                 x-transition:leave-end="scale-90 opacity-0">
+                {{-- Close Button --}}
+                <button @click="closeVideo()"
+                        class="absolute -top-10 right-0 text-white/80 hover:text-white transition focus:outline-none"
+                        aria-label="Tutup video">
+                    <i class="fas fa-times text-3xl"></i>
+                </button>
+                {{-- Video Title --}}
+                <p x-text="videoTitle" class="text-white font-semibold text-lg mb-3 truncate"></p>
+                {{-- Iframe Container (16:9) --}}
+                <div class="relative w-full" style="padding-bottom: 56.25%;">
+                    <iframe
+                        :src="videoUrl"
+                        class="absolute inset-0 w-full h-full rounded-xl shadow-2xl"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection 
