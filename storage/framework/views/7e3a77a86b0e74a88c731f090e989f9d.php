@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
         <!-- Main Slider -->
         <div class="lg:col-span-2">
-            <div class="swiper hero-swiper rounded-xl overflow-hidden shadow-lg h-[400px] md:h-[500px]">
+            <div class="swiper hero-swiper rounded-xl overflow-hidden shadow-lg h-[260px] sm:h-[360px] md:h-[440px] lg:h-[500px]">
                 <div class="swiper-wrapper">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $headlines; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $news): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                     <div class="swiper-slide relative">
@@ -31,12 +31,12 @@
 <?php $component = $__componentOriginale75524dba4ffced2baa5b8fd1d6ea996; ?>
 <?php unset($__componentOriginale75524dba4ffced2baa5b8fd1d6ea996); ?>
 <?php endif; ?>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-8">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 sm:p-6 md:p-8">
                             <span class="bg-red-700 text-white px-3 py-1 text-xs font-bold rounded mb-2 inline-block"><?php echo e($news->category->name); ?></span>
-                            <h2 class="text-2xl md:text-4xl font-bold text-white mb-2">
+                            <h2 class="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
                                 <a href="<?php echo e(route('news.show', $news->slug)); ?>" class="hover:underline"><?php echo e($news->title); ?></a>
                             </h2>
-                            <p class="text-gray-200 text-sm md:text-base line-clamp-2"><?php echo e($news->summary); ?></p>
+                            <p class="hidden sm:block text-gray-200 text-xs sm:text-sm line-clamp-2"><?php echo e($news->summary); ?></p>
                         </div>
                     </div>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -50,7 +50,7 @@
         <!-- Trending Sidebar -->
         <div class="lg:col-span-1">
             <h3 class="text-xl font-bold mb-4 border-l-4 border-red-700 pl-3">TERPOPULER</h3>
-            <div class="space-y-4">
+            <div class="space-y-4 max-h-[240px] sm:max-h-[300px] lg:max-h-none overflow-y-auto lg:overflow-visible pr-1">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $trending; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $news): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                 <div class="flex items-start space-x-4 group border-b border-gray-100 pb-4">
                     <span class="text-3xl font-black text-gray-200 group-hover:text-red-700 transition"><?php echo e($index + 1); ?></span>
@@ -618,7 +618,7 @@
             <?php echo $__env->make('partials._sidebar_ads', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
             <!-- Categories Widget -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-[276px] mx-auto">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full">
                 <h3 class="font-bold mb-4 border-l-4 border-red-700 pl-3">KATEGORI</h3>
                 <div class="space-y-2">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
@@ -842,4 +842,4 @@
     </div>
 <?php $__env->stopSection(); ?> 
 
-<?php echo $__env->make('layouts.frontend', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\portal-wisata\resources\views/welcome.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.frontend', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\pariwisatalive\resources\views/welcome.blade.php ENDPATH**/ ?>

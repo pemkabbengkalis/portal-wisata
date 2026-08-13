@@ -31,7 +31,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-900" x-data="{ scrolled: false }"
+<body class="bg-gray-50 text-gray-900 overflow-x-hidden" x-data="{ scrolled: false }"
     @scroll.window="scrolled = (window.pageYOffset > 300) ? true : false">
 
     <!-- Preloader -->
@@ -59,20 +59,24 @@
 
     <!-- Topbar -->
     <div class="bg-red-700 text-white py-2 text-sm">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div>
-                <i class="far fa-calendar-alt mr-2"></i> {{ now()->translatedFormat('l, d F Y') }}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-3 min-w-0">
+            {{-- Date: hidden on very small screens, shown from sm --}}
+            <div class="hidden sm:flex items-center shrink-0 whitespace-nowrap">
+                <i class="far fa-calendar-alt mr-2"></i>{{ now()->translatedFormat('l, d F Y') }}
             </div>
             @if($breaking)
-                <div class="hidden md:block flex-1 mx-8 overflow-hidden">
-                    <span class="font-bold mr-2 text-yellow-300">BREAKING NEWS:</span>
-                    <a href="{{ route('news.show', $breaking->slug) }}" class="hover:underline">{{ $breaking->title }}</a>
+                <div class="hidden md:flex flex-1 items-center overflow-hidden min-w-0">
+                    <span class="font-bold mr-2 text-yellow-300 shrink-0 whitespace-nowrap">BREAKING:</span>
+                    <a href="{{ route('news.show', $breaking->slug) }}"
+                        class="hover:underline truncate block min-w-0">{{ $breaking->title }}</a>
                 </div>
             @endif
-            <div class="flex space-x-4">
-                <a href="https://www.facebook.com/profile.php?id=100083774987735"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.instagram.com/pariwisatabks_official/"><i class="fab fa-instagram"></i></a>
+            <div class="flex items-center space-x-4 ml-auto shrink-0">
+                <a href="https://www.facebook.com/profile.php?id=100083774987735"
+                    class="hover:text-yellow-300 transition-colors"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-yellow-300 transition-colors"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/pariwisatabks_official/"
+                    class="hover:text-yellow-300 transition-colors"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>
@@ -80,34 +84,35 @@
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50" x-data="{ mobileOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-3">
+            <div class="flex justify-between items-center py-3 gap-2 min-w-0">
                 {{-- ── Logo & Site Identity ────────────────────────── --}}
-                <a href="{{ route('home') }}" class="flex items-center gap-3 group flex-shrink-0">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 group shrink-0 min-w-0">
                     @if(!empty($setting->logo))
                         <x-responsive-image :src="$setting->logo" :alt="$setting->site_name ?? 'Logo'"
-                            class="h-14 w-32 object-contain flex-shrink-0 drop-shadow-sm group-hover:scale-105 transition-transform duration-200"
+                            class="h-10 sm:h-14 w-24 sm:w-32 object-contain flex-shrink-0 drop-shadow-sm group-hover:scale-105 transition-transform duration-200"
                             :lazy="false" />
                     @else
                         {{-- Fallback emblem when no logo is set --}}
                         <div class="h-14 w-14 rounded-full bg-gradient-to-br from-red-600 to-red-800
-                                                    flex items-center justify-center flex-shrink-0 shadow
-                                                    group-hover:scale-105 transition-transform duration-200">
+                                                            flex items-center justify-center flex-shrink-0 shadow
+                                                            group-hover:scale-105 transition-transform duration-200">
                             <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                             </svg>
                         </div>
                     @endif
 
-                    <div class="leading-tight">
-                        <div class="text-l font-extrabold tracking-wide text-red-700  leading-none">
+                    <div class="leading-tight min-w-0">
+                        <div
+                            class="text-sm sm:text-base font-extrabold tracking-wide text-red-700 leading-none truncate">
                             {{ $setting->site_name ?? 'PORTAL BERITA' }}
                         </div>
                         @if(!empty($setting->tagline ?? $setting->address))
-                            <div class="text-xs font-medium text-gray-500 mt-0.5 leading-snug">
+                            <div class="text-xs font-medium text-gray-500 mt-0.5 leading-snug truncate">
                                 {{ $setting->tagline ?? \Illuminate\Support\Str::words($setting->address ?? '', 4, '') }}
                             </div>
                         @else
-                            <div class="text-xs font-medium text-gray-500 mt-0.5">Portal Berita Terpercaya</div>
+                            <div class="text-xs font-medium text-gray-500 mt-0.5 truncate">Portal Berita Terpercaya</div>
                         @endif
                     </div>
                 </a>
@@ -341,7 +346,7 @@
 
 
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         @yield('content')
     </main>
 
