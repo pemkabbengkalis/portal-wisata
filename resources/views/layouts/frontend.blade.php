@@ -29,10 +29,17 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Global responsive images */
-        img {
+        /* Responsive images: only for standalone img, not those inside h-full containers */
+        img:not(.object-cover):not(.object-contain):not([class*="h-full"]) {
             max-width: 100%;
-            height: auto;
+        }
+        /* Prevent overflow on all images */
+        img { max-width: 100%; }
+        /* Swiper buttons: smaller on mobile */
+        @media (max-width: 480px) {
+            .swiper-button-next, .swiper-button-prev {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -359,7 +366,7 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white pt-12 pb-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 border-b border-gray-800 pb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8 border-b border-gray-800 pb-8">
                 <div class="col-span-1 md:col-span-1">
                     <h2 class="text-sm font-bold mb-4 text-red-500">{{ $setting->site_name ?? 'NEWS PORTAL' }}</h2>
                     <!------<p class="text-gray-400 text-sm mb-4">{{ 'Jl. Arief Rahman No.24, Bengkalis Kota, Kec. Bengkalis

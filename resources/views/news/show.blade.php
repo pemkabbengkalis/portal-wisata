@@ -21,16 +21,15 @@
                 </ol>
             </nav>
 
-            <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight">{{ $news->title }}</h1>
+            <h1 class="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight">{{ $news->title }}</h1>
 
-            <div class="flex flex-wrap items-center text-sm text-gray-500 mb-8 pb-4 border-b border-gray-100 space-x-6">
+            <div class="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100 gap-x-4 gap-y-2">
                 <div class="flex items-center">
                     <img src="https://ui-avatars.com/api/?name={{ urlencode($news->user->name) }}&color=7F9CF5&background=EBF4FF"
-                        class="w-8 h-8 rounded-full mr-2">
+                        class="w-7 h-7 rounded-full mr-2 flex-shrink-0" style="width:28px;height:28px;max-width:28px;">
                     <span>Oleh <span class="font-bold text-gray-900">{{ $news->user->name }}</span></span>
                 </div>
-                <span><i class="far fa-clock mr-1"></i> {{ optional($news->published_at)->translatedFormat('d F Y, H:i') }}
-                    WIB</span>
+                <span><i class="far fa-clock mr-1"></i> {{ optional($news->published_at)->translatedFormat('d M Y') }}</span>
                 <span><i class="far fa-eye mr-1"></i> {{ number_format($news->views) }} views</span>
             </div>
 

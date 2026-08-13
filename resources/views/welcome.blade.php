@@ -105,7 +105,7 @@
             }
         }"
          @keydown.escape.window="closeLightbox()"
-         class="container mx-auto mb-12 bg-gray-100 py-8 rounded-xl">
+         class="mb-12 bg-gray-100 py-6 sm:py-8 rounded-xl px-4 sm:px-6">
 
 
 
@@ -150,7 +150,7 @@
                     </div>
 
                     {{-- Title --}}
-                    <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-2 leading-tight">
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-gray-900 mb-2 leading-tight">
                         Selamat Datang di {{ $setting->site_name ?? config('app.name') }}
                     </h2>
 
@@ -563,7 +563,7 @@
     <!-- Latest News Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
-            <h3 class="text-2xl font-black mb-6 border-b-2 border-red-700 inline-block pb-1">BERITA TERBARU</h3>
+            <h3 class="text-xl sm:text-2xl font-black mb-6 border-b-2 border-red-700 inline-block pb-1">BERITA TERBARU</h3>
             <div class="space-y-8">
                 @foreach($latestNews as $news)
                 <div class="flex flex-col md:flex-row gap-6 group">
@@ -724,13 +724,13 @@
                 return url;
             }
          }">
-        <h3 class="text-4xl font-bold text-slate-900 mb-2">Galeri Kegiatan</h3>
-        <p class="text-slate-500 mb-8 text-lg">Momen pelayanan dan kegiatan kami</p>
+        <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2">Galeri Kegiatan</h3>
+        <p class="text-slate-500 mb-6 sm:mb-8 text-sm sm:text-base">Momen pelayanan dan kegiatan kami</p>
         
-        <div class="inline-flex bg-slate-100 p-1.5 rounded-full mb-10 shadow-sm">
-            <button @click="filter = 'all'" :class="filter === 'all' ? 'bg-red-700 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'" class="px-8 py-2 rounded-full font-medium transition-all duration-300">Semua</button>
-            <button @click="filter = 'photo'" :class="filter === 'photo' ? 'bg-red-700 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'" class="px-8 py-2 rounded-full font-medium transition-all duration-300">Foto</button>
-            <button @click="filter = 'video'" :class="filter === 'video' ? 'bg-red-700 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'" class="px-8 py-2 rounded-full font-medium transition-all duration-300">Video</button>
+        <div class="inline-flex bg-slate-100 p-1 sm:p-1.5 rounded-full mb-6 sm:mb-10 shadow-sm">
+            <button @click="filter = 'all'" :class="filter === 'all' ? 'bg-red-700 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'" class="px-4 sm:px-8 py-1.5 sm:py-2 rounded-full text-sm font-medium transition-all duration-300">Semua</button>
+            <button @click="filter = 'photo'" :class="filter === 'photo' ? 'bg-red-700 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'" class="px-4 sm:px-8 py-1.5 sm:py-2 rounded-full text-sm font-medium transition-all duration-300">Foto</button>
+            <button @click="filter = 'video'" :class="filter === 'video' ? 'bg-red-700 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'" class="px-4 sm:px-8 py-1.5 sm:py-2 rounded-full text-sm font-medium transition-all duration-300">Video</button>
         </div>
         
         @if($galleries->count() > 0)
