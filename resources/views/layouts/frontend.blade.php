@@ -41,6 +41,33 @@
                 display: none !important;
             }
         }
+        /* Prose content: make tables responsive */
+        .prose table {
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Ensure content doesn't overflow on small screens */
+        .prose img {
+            max-width: 100%;
+            height: auto;
+        }
+        .prose iframe {
+            max-width: 100%;
+        }
+        /* Prevent horizontal scroll from content */
+        main {
+            overflow-x: hidden;
+        }
+        /* Go up button: smaller position on mobile */
+        @media (max-width: 640px) {
+            .fixed.bottom-8.right-8 {
+                bottom: 1.25rem;
+                right: 1.25rem;
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+        }
     </style>
 </head>
 
