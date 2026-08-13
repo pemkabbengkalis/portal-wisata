@@ -28,6 +28,12 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        /* Global responsive images */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 
