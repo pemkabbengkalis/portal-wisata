@@ -19,8 +19,8 @@
     </nav>
 
     <!-- Category Header -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
-        <h1 class="text-3xl font-black text-gray-900">{{ $category->name }}</h1>
+    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+        <h1 class="text-2xl sm:text-3xl font-black text-gray-900">{{ $category->name }}</h1>
         <p class="text-gray-500 mt-2">{{ $news->total() }} berita dalam kategori ini</p>
     </div>
 
@@ -31,10 +31,10 @@
                 <div class="space-y-8">
                     @foreach($news as $item)
                         <div
-                            class="flex flex-col md:flex-row gap-6 group bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                            <div class="w-full md:w-1/3 shrink-0 overflow-hidden rounded-lg">
+                            class="flex flex-col sm:flex-row gap-4 sm:gap-6 group bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                            <div class="w-full sm:w-1/3 shrink-0 overflow-hidden rounded-lg">
                                 <x-responsive-image :src="$item->thumbnail" :alt="$item->title"
-                                    class="w-full h-48 object-cover group-hover:scale-105 transition duration-500"
+                                    class="w-full h-44 sm:h-48 object-cover group-hover:scale-105 transition duration-500"
                                     :sizes="['thumbnail' => 300, 'small' => 400]" />
                             </div>
                             <div class="flex-1">

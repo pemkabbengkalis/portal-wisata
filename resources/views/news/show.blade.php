@@ -39,7 +39,7 @@
                 </div>
             @endif
 
-            <div class="prose prose-lg max-w-none mb-12 text-gray-800 leading-relaxed">
+            <div class="prose prose-sm sm:prose lg:prose-lg max-w-none mb-12 text-gray-800 leading-relaxed">
                 {!! $news->content !!}
             </div>
 
@@ -79,7 +79,7 @@
             <!-- Related News -->
             <div class="mb-12">
                 <h3 class="text-2xl font-black mb-6 border-l-4 border-red-700 pl-4">BERITA TERKAIT</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     @foreach($related as $item)
                         <div class="group">
                             <div class="rounded-lg overflow-hidden mb-3 aspect-video">

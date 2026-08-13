@@ -29,46 +29,59 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Responsive images: only for standalone img, not those inside h-full containers */
-        img:not(.object-cover):not(.object-contain):not([class*="h-full"]) {
-            max-width: 100%;
+        /* ── Global: prevent horizontal overflow ── */
+        html, body { overflow-x: hidden; }
+        main { overflow-x: hidden; }
+
+        /* ── Images: never overflow ── */
+        img { max-width: 100%; height: auto; }
+        img.object-cover { height: 100%; }
+
+        /* ── Scrollbar hide utility ── */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── Prose / rich content ── */
+        .prose img  { max-width: 100%; height: auto; border-radius: 0.5rem; }
+        .prose iframe { max-width: 100%; }
+        .prose pre   { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .prose table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .prose p, .prose li { word-break: break-word; overflow-wrap: break-word; }
+        /* Responsive video embeds inside prose */
+        .prose .video-wrapper, .prose figure { position: relative; width: 100%; padding-bottom: 56.25%; }
+        .prose .video-wrapper iframe, .prose figure iframe {
+            position: absolute; inset: 0; width: 100%; height: 100%;
         }
-        /* Prevent overflow on all images */
-        img { max-width: 100%; }
-        /* Swiper buttons: smaller on mobile */
-        @media (max-width: 480px) {
-            .swiper-button-next, .swiper-button-prev {
-                display: none !important;
+
+        /* ── Swiper: hide nav arrows on small screens ── */
+        @media (max-width: 639px) {
+            .swiper-button-next, .swiper-button-prev { display: none !important; }
+        }
+
+        /* ── Go-up button: compact on mobile ── */
+        @media (max-width: 639px) {
+            #go-up-btn {
+                bottom: 1rem !important;
+                right: 1rem !important;
+                width: 2.5rem !important;
+                height: 2.5rem !important;
             }
         }
-        /* Prose content: make tables responsive */
-        .prose table {
+
+        /* ── Footer iframe map ── */
+        .footer-map-iframe {
+            width: 100%;
+            height: 150px;
+            border-radius: 0.75rem;
             display: block;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
         }
-        /* Ensure content doesn't overflow on small screens */
-        .prose img {
-            max-width: 100%;
-            height: auto;
-        }
-        .prose iframe {
-            max-width: 100%;
-        }
-        /* Prevent horizontal scroll from content */
-        main {
-            overflow-x: hidden;
-        }
-        /* Go up button: smaller position on mobile */
-        @media (max-width: 640px) {
-            .fixed.bottom-8.right-8 {
-                bottom: 1.25rem;
-                right: 1.25rem;
-                width: 2.5rem;
-                height: 2.5rem;
-            }
-        }
+
+        /* ── Mobile nav smooth transition ── */
+        .mobile-nav-item { transition: background-color 0.15s ease; }
+        .mobile-nav-item:active { background-color: #fef2f2; }
+
     </style>
+
 </head>
 
 <body class="bg-gray-50 text-gray-900 overflow-x-hidden" x-data="{ scrolled: false }"
@@ -420,8 +433,8 @@
                 </div>
                 <div>
                     <h3 class="font-bold mb-4 uppercase">Lokasi</h3>
-                    <div class="rounded-m overflow-hidden shadow-xl">
-                        <iframe class="rounded-xl w-full h-[150px]"
+                    <div class="overflow-hidden rounded-xl shadow-lg">
+                        <iframe class="footer-map-iframe"
                             src="https://www.google.com/maps?q=Jl.+Arif+Rahman+No.24,+Bengkalis+Kota,+Kec.+Bengkalis,+Kabupaten+Bengkalis,+Riau+28713&output=embed"
                             loading="lazy" allowfullscreen>
                         </iframe>
@@ -448,9 +461,9 @@
     </footer>
 
     <!-- Go Up Button -->
-    <button x-show="scrolled" x-transition @click="window.scrollTo({top: 0, behavior: 'smooth'})"
-        class="fixed bottom-8 right-8 bg-red-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-red-800 transition-colors z-50">
-        <i class="fas fa-arrow-up"></i>
+    <button id="go-up-btn" x-show="scrolled" x-transition @click="window.scrollTo({top: 0, behavior: 'smooth'})"
+        class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-red-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-red-800 transition-colors z-50">
+        <i class="fas fa-arrow-up text-sm sm:text-base"></i>
     </button>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

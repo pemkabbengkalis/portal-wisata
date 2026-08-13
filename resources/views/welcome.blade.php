@@ -300,7 +300,7 @@
             @endif
 
             @if($destCat->destinations->count() > 0)
-            <div data-grid class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" id="grid-{{ $destCat->slug }}">
+            <div data-grid class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" id="grid-{{ $destCat->slug }}">
                 @foreach($destCat->destinations as $destination)
                 <div data-card
                      data-name="{{ strtolower($destination->name) }}"
@@ -734,7 +734,7 @@
         </div>
         
         @if($galleries->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
             @foreach($galleries as $gallery)
             <div x-show="filter === 'all' || filter === '{{ $gallery->video_url ? 'video' : 'photo' }}'" class="group block relative overflow-hidden rounded-xl shadow-sm aspect-square bg-gray-100 transition-all duration-300">
                 @if($gallery->video_url)
