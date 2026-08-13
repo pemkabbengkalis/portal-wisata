@@ -592,12 +592,12 @@
         </div>
 
         <!-- Sidebar Widgets -->
-        <div class="lg:col-span-1 space-y-12 w-[275px] h-[345px]">
+        <div class="lg:col-span-1 space-y-12">
             <!-- Ad Widget -->
             @include('partials._sidebar_ads')
 
             <!-- Categories Widget -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full lg:w-[275px] h-[345px] overflow-y-auto scrollbar-hide">
                 <h3 class="font-bold mb-4 border-l-4 border-red-700 pl-3">KATEGORI</h3>
                 <div class="space-y-2">
                     @foreach($categories as $cat)

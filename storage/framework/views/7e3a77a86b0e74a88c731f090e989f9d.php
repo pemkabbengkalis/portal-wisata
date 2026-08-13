@@ -613,12 +613,12 @@
         </div>
 
         <!-- Sidebar Widgets -->
-        <div class="lg:col-span-1 space-y-12 w-[275px] h-[345px]">
+        <div class="lg:col-span-1 space-y-12">
             <!-- Ad Widget -->
             <?php echo $__env->make('partials._sidebar_ads', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
             <!-- Categories Widget -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full lg:w-[275px] h-[345px] overflow-y-auto scrollbar-hide">
                 <h3 class="font-bold mb-4 border-l-4 border-red-700 pl-3">KATEGORI</h3>
                 <div class="space-y-2">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
