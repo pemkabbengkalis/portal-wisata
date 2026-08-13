@@ -67,7 +67,7 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="lg:col-span-1 space-y-12">
+        <div class="lg:col-span-1 space-y-12 w-[275px] h-[345px]">
             <!-- Popular Widget -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full">
                 <h3 class="font-bold mb-6 border-l-4 border-red-700 pl-3 uppercase">Paling Populer</h3>

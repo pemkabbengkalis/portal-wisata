@@ -613,7 +613,7 @@
         </div>
 
         <!-- Sidebar Widgets -->
-        <div class="lg:col-span-1 space-y-12">
+        <div class="lg:col-span-1 space-y-12 w-[275px] h-[345px]">
             <!-- Ad Widget -->
             <?php echo $__env->make('partials._sidebar_ads', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 

@@ -592,7 +592,7 @@
         </div>
 
         <!-- Sidebar Widgets -->
-        <div class="lg:col-span-1 space-y-12">
+        <div class="lg:col-span-1 space-y-12 w-[275px] h-[345px]">
             <!-- Ad Widget -->
             @include('partials._sidebar_ads')
 
